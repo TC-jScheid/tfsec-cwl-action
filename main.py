@@ -16,7 +16,7 @@ def main():
     #Initialize rules list
     rules = []
     #Instantiate client with CWL
-    client = boto3.client('logs')
+    client = boto3.client('logs', region_name='us-east-1')
     
     with open(file_path) as f:
         data = json.load(f)
