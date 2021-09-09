@@ -1,6 +1,7 @@
 import os 
 import json
 import boto3
+from datetime import datetime
 
 def main():
     # Input Variables
@@ -37,16 +38,24 @@ def main():
     except:
         print(f"Log Stream, {cwl_stream}, already exists")
 
+    #TODO: Build dir to send
+    message = rules
+    #'Repository': 123,
+    #'Branch': 'branch1',
+    #'User': 'user1',
+    #'Rules': rules
+    
+    # Get current timestamp
+    now = datetime.now()
+
     putResponse = client.put_log_events(
         logGroupName=cwl_group,
         logStreamName=cwl_stream,
         # Include repo, and branch, and user
         logEvents=[
             {
-                'Repository': 123,
-                'Branch': 'branch1',
-                'User': 'user1',
-                'Rules': rules
+                'timestamp': now.strftime("%Y-%m-%d:%H:%M:%S"), #yyyy-mm-ddThh:mm:ss
+                'message': message
             },
         ]
     )
