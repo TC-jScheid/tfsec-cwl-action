@@ -34,20 +34,19 @@ def main():
         logStreamName=cwl_stream
     )
 
-    if not response:
-        putResponse = client.put_log_events(
-            logGroupName=cwl_group,
-            logStreamName=cwl_stream,
-            # Include repo, and branch, and user
-            logEvents=[
-                {
-                    'Repository': 123,
-                    'Branch': 'branch1',
-                    'User': 'user1',
-                    'Rules': rules
-                },
-            ]
-        )
+    putResponse = client.put_log_events(
+        logGroupName=cwl_group,
+        logStreamName=cwl_stream,
+        # Include repo, and branch, and user
+        logEvents=[
+            {
+                'Repository': 123,
+                'Branch': 'branch1',
+                'User': 'user1',
+                'Rules': rules
+            },
+        ]
+    )
 
     
 
