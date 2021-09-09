@@ -11,6 +11,12 @@ inputs:
   aws_key_secret:
     description: "AWS Key Secret for writing to CWL"
     required: true
+  cwl_group:
+    description: "Cloudwatch logs group"
+    required: true
+  cwl_stream:
+    description: "Cloudwatch logs stream"
+    required: true
 outputs:
   rules:
     description: "Rules TFSec reported on"
