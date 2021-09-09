@@ -60,6 +60,7 @@ def main():
         ]
     )
 
+    print(f'Put log event to {cwl_group} / {cwl_stream}')
     
 
 if __name__ == "__main__":
