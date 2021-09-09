@@ -29,10 +29,13 @@ def main():
         rules = data['runs'][0]['tool']['driver']['rules']
 
     #Check if CWL stream is created
-    response = client.create_log_stream(
-        logGroupName=cwl_group,
-        logStreamName=cwl_stream
-    )
+    try:
+        response = client.create_log_stream(
+            logGroupName=cwl_group,
+            logStreamName=cwl_stream
+        )
+    except:
+        print(f"Log Stream, {cwl_stream}, already exists")
 
     putResponse = client.put_log_events(
         logGroupName=cwl_group,
