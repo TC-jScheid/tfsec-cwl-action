@@ -1,6 +1,5 @@
 import os 
 import json
-import requests  # noqa We are just importing this to prove the dependency installed correctly
 
 def main():
 
@@ -11,6 +10,8 @@ def main():
         data = json.load(f)
 
         rules = data['runs'][0]['tool']['driver']['rules']
+
+# Send to cloudwatch logs as 1 json object
 
         for r in rules:
             print(f"Rule: {r} ")
