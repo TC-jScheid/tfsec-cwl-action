@@ -2,7 +2,7 @@ name: "TFSEC to CWL"
 description: "Send TFSEC report to CWL"
 author: "Jacob Scheid"
 inputs:
-  input_path:
+  report:
     description: "Report file to use"
     required: true
 outputs:

@@ -5,7 +5,7 @@ import requests  # noqa We are just importing this to prove the dependency insta
 def main():
 
 
-    file_path = os.environ["INPUT_PATH"]
+    file_path = os.environ["INPUT_REPORT"]
 
     with open(file_path) as f:
         data = json.load(f)
