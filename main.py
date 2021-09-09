@@ -1,13 +1,20 @@
-import os
+import os 
+import json
 import requests  # noqa We are just importing this to prove the dependency installed correctly
 
 
 def main():
-    my_input = os.environ["INPUT_MYINPUT"]
+    #my_input = os.environ["tfsec.sarif"]
+    file_path = os.environ["INPUT_PATH"]
+    
+    with open(os.environ["INPUT_PATH"]) as f:
+        data = json.load(f)
 
-    my_output = f"Hello {my_input}"
+        rules = data['runs'][0]['tool']['driver']['rules']
 
-    print(f"::set-output name=myOutput::{my_output}")
+        for r in rules:
+            print(f"Rule: {r} ")    
+    
 
 
 if __name__ == "__main__":

@@ -1,13 +1,13 @@
-name: "Python Container Action Template"
-description: "Get started with Python Container actions"
-author: "Jacob Tomlinson"
+name: "TFSEC to CWL"
+description: "Send TFSEC report to CWL"
+author: "Jacob Scheid"
 inputs:
-  myInput:
-    description: "Input to use"
-    default: "world"
+  report:
+    description: "Report file to use"
+    required: true
 outputs:
-  myOutput:
-    description: "Output from the action"
+  rules:
+    description: "Rules TFSec reported on"
 runs:
   using: "docker"
   image: "Dockerfile"
