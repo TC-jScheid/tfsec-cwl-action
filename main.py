@@ -16,7 +16,12 @@ def main():
     #Initialize rules list
     rules = []
     #Instantiate client with CWL
-    client = boto3.client('logs', region_name='us-east-1')
+    client = boto3.client(
+                            'logs', 
+                            region_name='us-east-1', 
+                            aws_access_key_id=AWS_KEY_ID, 
+                            aws_secret_access_key=AWS_KEY_SECRET
+                        )
     
     with open(file_path) as f:
         data = json.load(f)
