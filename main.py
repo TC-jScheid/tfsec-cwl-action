@@ -2,6 +2,7 @@ import os
 import json
 import boto3
 import time
+import requests
 
 def main():
     # Input Variables
@@ -14,12 +15,24 @@ def main():
     cwl_group = os.environ["INPUT_CWL_GROUP"]
     # CWL Stream
     cwl_stream = os.environ["INPUT_CWL_STREAM"]
+    #Get github token
+    token = os.environ['INPUT_GITHUB_TOKEN']
+    branch = os.environ["GITHUB_REF"]
+    repository = os.environ["GITHUB_REPOSITORY"]
 
     #Github environment variables
     repository = os.environ["GITHUB_REPOSITORY"]
     author = os.environ["GITHUB_ACTOR"]
     commit = os.environ["GITHUB_SHA"]
     branch = os.environ["GITHUB_REF"]
+    #Check if pr
+    try:
+        head = os.environ["GITHUB_HEAD_REF"]
+        base = os.environ["GITHUB_BASE_REF"]
+    except:
+        print('[-] Not a PR... skipping comments')
+        head = ''
+        base = ''
     #Initialize rules list
     rules = []
     #Instantiate client with CWL
@@ -35,6 +48,12 @@ def main():
         # CAREFULLY DECONSTRUCTED from serif format
         rules = data['runs'][0]['tool']['driver']['rules']
 
+    #TODO: Check if PR and comment rules
+    if head and base:
+        output = commentRules(rules, token, branch, repository, commit)
+    else:
+        print('[-] No head or base ref, not a PR...')
+    
     #Check if CWL stream is created
     try:
         client.create_log_stream(
@@ -42,9 +61,9 @@ def main():
             logStreamName=cwl_stream
         )
     except:
-        print(f"Log Stream, {cwl_stream}, already exists")
+        print(f"[-] Log Stream, {cwl_stream}, already exists")
 
-    #TODO: Build dir to send
+    # Build dir to send
     message = {}
     message['Repository'] = repository
     message['Branch'] = branch
@@ -79,7 +98,30 @@ def main():
     putResponse = client.put_log_events(**event_log)
 
     
-    print(f'Put log event to {cwl_group} / {cwl_stream}')
+    print(f'[-] Sent log event to {cwl_group} / {cwl_stream}')
+
+def commentRules(rules, token, branch, repository, commit):
+    #Get pr number
+    ref = os.environ["GITHUB_REF"]
+    pr_num = ref.split('/')[2]
+    owner = repository.split('/')[0]
+    repo_name = repository.split('/')[1]
+    query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}/reviews"
+    #Iterate over rules and comment
+    print('[-] Commenting broken rules')
+    for rule in rules:
+        body = rule['shortDescription']['text']
+        params = {
+            "owner": owner,
+            "repo": repo_name,
+            "pull_number": pr_num,
+            "event": 'COMMENT',
+            "body": body
+        }
+        print(params)
+        headers = {'Authorization': f'token {token}'}
+        r = requests.post(query_url, headers=headers, data=json.dumps(params))
+        print(r.status_code)
     
 
 if __name__ == "__main__":

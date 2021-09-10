@@ -1,7 +1,8 @@
 FROM python:3-slim AS builder
-ADD . /app
+COPY . /app
+
 WORKDIR /app
-RUN pip install --target=/app boto3
+RUN pip install --target=/app boto3 requests
 
 FROM gcr.io/distroless/python3-debian10
 COPY --from=builder /app /app
