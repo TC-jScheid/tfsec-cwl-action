@@ -15,6 +15,10 @@ def main():
     cwl_group = os.environ["INPUT_CWL_GROUP"]
     # CWL Stream
     cwl_stream = os.environ["INPUT_CWL_STREAM"]
+    #Get github token
+    token = os.environ('INPUT_GITHUB_TOKEN')
+    branch = os.environ["GITHUB_REF"]
+    repository = os.environ["GITHUB_REPOSITORY"]
 
     #Github environment variables
     repository = os.environ["GITHUB_REPOSITORY"]
@@ -37,7 +41,7 @@ def main():
         rules = data['runs'][0]['tool']['driver']['rules']
 
     #TODO: Check if PR and comment rules
-    output = commentRules(rules)
+    output = commentRules(rules, token, branch, repository)
     
     #Check if CWL stream is created
     try:
@@ -85,11 +89,8 @@ def main():
     
     print(f'Put log event to {cwl_group} / {cwl_stream}')
 
-def commentRules(rules):
-    #Get github token
-    token = os.environ('INPUT_GITHUB_TOKEN')
-    branch = os.environ["GITHUB_REF"]
-    repository = os.environ["GITHUB_REPOSITORY"]
+def commentRules(rules, token, branch, repository):
+    
     #Connect to github
     owner = 'tigertext'
     query_url = f"https://api.github.com/repos/{repository}/issues"
