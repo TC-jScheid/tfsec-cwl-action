@@ -25,6 +25,14 @@ def main():
     author = os.environ["GITHUB_ACTOR"]
     commit = os.environ["GITHUB_SHA"]
     branch = os.environ["GITHUB_REF"]
+    #Check if pr
+    try:
+        head = os.environ["GITHUB_HEAD_REF"]
+        base = os.environ["GITHUB_BASE_REF"]
+    except:
+        print('[-] Not a PR... skipping comments')
+        head = ''
+        base = ''
     #Initialize rules list
     rules = []
     #Instantiate client with CWL
@@ -41,7 +49,10 @@ def main():
         rules = data['runs'][0]['tool']['driver']['rules']
 
     #TODO: Check if PR and comment rules
-    output = commentRules(rules, token, branch, repository)
+    if head and base:
+        output = commentRules(rules, token, branch, repository)
+    else:
+        print('[-] No head or base ref, not a PR...')
     
     #Check if CWL stream is created
     try:
@@ -50,7 +61,7 @@ def main():
             logStreamName=cwl_stream
         )
     except:
-        print(f"Log Stream, {cwl_stream}, already exists")
+        print(f"[-] Log Stream, {cwl_stream}, already exists")
 
     # Build dir to send
     message = {}
@@ -87,7 +98,7 @@ def main():
     putResponse = client.put_log_events(**event_log)
 
     
-    print(f'Put log event to {cwl_group} / {cwl_stream}')
+    print(f'[-] Sent log event to {cwl_group} / {cwl_stream}')
 
 def commentRules(rules, token, branch, repository):
     
