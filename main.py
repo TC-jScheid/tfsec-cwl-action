@@ -91,18 +91,14 @@ def commentRules(rules):
     branch = os.environ["GITHUB_REF"]
     repository = os.environ["GITHUB_REPOSITORY"]
     #Connect to github
-    g = Github(token)
-    repo = g.get_repo(repository)
-
-    i = repo.create_issue(
-        title = 'Issue 1',
-        body = json.dumps(rules[0]),
-        assignee = 'TC-jScheid',
-        labesl = [
-            'tfsec'
-        ]
-    )
-
+    owner = 'tigertext'
+    query_url = f"https://api.github.com/repos/{repository}/issues"
+    params = {
+        "state": "open",
+    }
+    headers = {'Authorization': f'token {token}'}
+    r = requests.get(query_url, headers=headers, params=params)
+    print(r.json())
     
 
 if __name__ == "__main__":
