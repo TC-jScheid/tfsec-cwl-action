@@ -116,7 +116,7 @@ def commentRules(rules, token, branch, repository, commit):
             "repo": repo_name,
             "pull_number": pr_num,
             "event": 'COMMENT',
-            "body": "Just a test comment"
+            "body": body
         }
         print(params)
         headers = {'Authorization': f'token {token}'}
