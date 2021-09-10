@@ -2,7 +2,7 @@ import os
 import json
 import boto3
 import time
-from github import Github
+import requests
 
 def main():
     # Input Variables
