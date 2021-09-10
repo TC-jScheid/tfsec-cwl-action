@@ -106,7 +106,7 @@ def commentRules(rules, token, branch, repository):
     pr_num = ref.split('/')[2]
     owner = repository.split('/')[0]
     repo_name = repository.split('/')[1]
-    query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}"
+    query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}/comments"
     #Iterate over rules and comment
     print('[-] Commenting broken rules')
     for rule in rules:
@@ -115,7 +115,7 @@ def commentRules(rules, token, branch, repository):
             "owner": owner,
             "repo": repo_name,
             "pull_number": pr_num,
-            "body": json.dumps(body)
+            "body": body
         }
         headers = {'Authorization': f'token {token}'}
         r = requests.post(query_url, headers=headers, params=params)
