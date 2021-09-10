@@ -31,7 +31,7 @@ def main():
 
     #Check if CWL stream is created
     try:
-        response = client.create_log_stream(
+        client.create_log_stream(
             logGroupName=cwl_group,
             logStreamName=cwl_stream
         )
@@ -44,22 +44,33 @@ def main():
     #'Branch': 'branch1',
     #'User': 'user1',
     #'Rules': rules
-    
+
+    # Get stream status
+    response = client.describe_log_streams(
+        logGroupName=cwl_group,
+        logStreamNamePrefix=cwl_stream
+    )
+
     # Get current timestamp
     timestamp = int(round(time.time() * 1000))
 
-    putResponse = client.put_log_events(
-        logGroupName=cwl_group,
-        logStreamName=cwl_stream,
-        # Include repo, and branch, and user
-        logEvents=[
+    event_log = {
+        'logGroupName': cwl_group,
+        'logStreamName': cwl_stream,
+        'logEvents': [
             {
                 'timestamp': timestamp, 
                 'message': message
-            },
+            }
         ]
-    )
+    }
 
+    if 'uploadSequenceToken' in response['logStreams'][0]:
+           event_log.update({'sequenceToken': response['logStreams'][0] ['uploadSequenceToken']})
+
+    putResponse = client.put_log_events(**event_log)
+
+    
     print(f'Put log event to {cwl_group} / {cwl_stream}')
     
 
