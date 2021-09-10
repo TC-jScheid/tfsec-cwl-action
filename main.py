@@ -68,7 +68,7 @@ def main():
         'logEvents': [
             {
                 'timestamp': timestamp, 
-                'message': message
+                'message': json.dumps(message)
             }
         ]
     }
