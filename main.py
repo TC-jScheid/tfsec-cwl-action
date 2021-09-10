@@ -117,8 +117,9 @@ def commentRules(rules, token, branch, repository):
         "pull_number": pr_num,
         "body": "Just a test comment"
     }
+    print(params)
     headers = {'Authorization': f'token {token}'}
-    r = requests.post(query_url, headers=headers, json=json.dumps(params))
+    r = requests.post(query_url, headers=headers, data=json.dumps(params))
     print(r.json())
     
 
