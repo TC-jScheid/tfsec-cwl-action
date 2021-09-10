@@ -106,17 +106,20 @@ def commentRules(rules, token, branch, repository):
     pr_num = ref.split('/')[2]
     owner = repository.split('/')[0]
     repo_name = repository.split('/')[1]
-
-    owner = 'tigertext'
     query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}"
-    params = {
-        "owner": owner,
-        "repo": repo_name,
-        "pull_number": pr_num
-    }
-    headers = {'Authorization': f'token {token}'}
-    r = requests.get(query_url, headers=headers, params=params)
-    print(r.json())
+    #Iterate over rules and comment
+    print('[-] Commenting broken rules')
+    for rule in rules:
+        body = rule['shortDescription']['text']
+        params = {
+            "owner": owner,
+            "repo": repo_name,
+            "pull_number": pr_num,
+            "body": body
+        }
+        headers = {'Authorization': f'token {token}'}
+        r = requests.post(query_url, headers=headers, params=params)
+        print(r.json())
     
 
 if __name__ == "__main__":
