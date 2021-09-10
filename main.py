@@ -16,7 +16,7 @@ def main():
     # CWL Stream
     cwl_stream = os.environ["INPUT_CWL_STREAM"]
     #Get github token
-    token = os.environ['ACTIONS_RUNTIME_TOKEN']
+    token = os.environ['INPUT_GITHUB_TOKEN']
     branch = os.environ["GITHUB_REF"]
     repository = os.environ["GITHUB_REPOSITORY"]
 
