@@ -1,7 +1,7 @@
 FROM python:3-slim AS builder
 ADD . /app
 WORKDIR /app
-RUN pip install --target=/app boto3 PyGithub
+RUN pip install --target=/app boto3 PyGithub cffi
 
 FROM gcr.io/distroless/python3-debian10
 COPY --from=builder /app /app
