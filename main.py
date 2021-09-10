@@ -50,7 +50,7 @@ def main():
 
     #TODO: Check if PR and comment rules
     if head and base:
-        output = commentRules(rules, token, branch, repository)
+        output = commentRules(rules, token, branch, repository, commit)
     else:
         print('[-] No head or base ref, not a PR...')
     
@@ -100,13 +100,13 @@ def main():
     
     print(f'[-] Sent log event to {cwl_group} / {cwl_stream}')
 
-def commentRules(rules, token, branch, repository):
+def commentRules(rules, token, branch, repository, commit):
     #Get pr number
     ref = os.environ["GITHUB_REF"]
     pr_num = ref.split('/')[2]
     owner = repository.split('/')[0]
     repo_name = repository.split('/')[1]
-    query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}/comments"
+    query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}/reviews"
     #Iterate over rules and comment
     print('[-] Commenting broken rules')
     #for rule in rules:
@@ -115,6 +115,7 @@ def commentRules(rules, token, branch, repository):
         "owner": owner,
         "repo": repo_name,
         "pull_number": pr_num,
+        "event": 'COMMENT',
         "body": "Just a test comment"
     }
     print(params)
