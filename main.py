@@ -14,6 +14,12 @@ def main():
     cwl_group = os.environ["INPUT_CWL_GROUP"]
     # CWL Stream
     cwl_stream = os.environ["INPUT_CWL_STREAM"]
+
+    #Github environment variables
+    repository = os.environ["GITHUB_REPOSITORY"]
+    author = os.environ["GITHUB_ACTOR"]
+    commit = os.environ["GITHUB_SHA"]
+    branch = os.environ["GITHUB_REF"]
     #Initialize rules list
     rules = []
     #Instantiate client with CWL
@@ -39,11 +45,13 @@ def main():
         print(f"Log Stream, {cwl_stream}, already exists")
 
     #TODO: Build dir to send
-    message = json.dumps(rules)
-    #'Repository': 123,
-    #'Branch': 'branch1',
-    #'User': 'user1',
-    #'Rules': rules
+    message = {}
+    message['Repository'] = repository
+    message['Branch'] = branch
+    message['User'] = author
+    message['Commit'] = commit
+    message['Rule_Count'] = len(rules) #Get number of rules
+    message['Rules'] = rules
 
     # Get stream status
     response = client.describe_log_streams(
