@@ -101,7 +101,7 @@ def main():
     print(f'[-] Sent log event to {cwl_group} / {cwl_stream}')
 
 def commentRules(rules, token, branch, repository):
-    
+    #Get pr number
     #Connect to github
     owner = 'tigertext'
     query_url = f"https://api.github.com/repos/{repository}/issues"
