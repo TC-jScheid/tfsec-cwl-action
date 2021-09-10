@@ -2,6 +2,7 @@ import os
 import json
 import boto3
 import time
+from github import Github
 
 def main():
     # Input Variables
@@ -35,6 +36,9 @@ def main():
         # CAREFULLY DECONSTRUCTED from serif format
         rules = data['runs'][0]['tool']['driver']['rules']
 
+    #TODO: Check if PR and comment rules
+    output = commentRules(rules)
+    
     #Check if CWL stream is created
     try:
         client.create_log_stream(
@@ -44,7 +48,7 @@ def main():
     except:
         print(f"Log Stream, {cwl_stream}, already exists")
 
-    #TODO: Build dir to send
+    # Build dir to send
     message = {}
     message['Repository'] = repository
     message['Branch'] = branch
@@ -80,6 +84,25 @@ def main():
 
     
     print(f'Put log event to {cwl_group} / {cwl_stream}')
+
+def commentRules(rules):
+    #Get github token
+    token = os.environ('INPUT_GITHUB_TOKEN')
+    branch = os.environ["GITHUB_REF"]
+    repository = os.environ["GITHUB_REPOSITORY"]
+    #Connect to github
+    g = Github(token)
+    repo = g.get_repo(repository)
+
+    i = repo.create_issue(
+        title = 'Issue 1',
+        body = json.dumps(rules[0]),
+        assignee = 'TC-jScheid',
+        labesl = [
+            'tfsec'
+        ]
+    )
+
     
 
 if __name__ == "__main__":
