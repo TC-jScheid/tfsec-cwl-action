@@ -1,6 +1,5 @@
 FROM python:3-slim AS builder
 COPY . /app
-COPY /github/workflow/event.json /app
 
 WORKDIR /app
 RUN pip install --target=/app boto3 requests

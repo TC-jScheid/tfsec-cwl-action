@@ -102,15 +102,17 @@ def main():
 
 def commentRules(rules, token, branch, repository):
     #Get pr number
-    if os.path.exists('./event.json'):
-        with open('event.json', 'r') as f:
-            event = json.load(f)
-            print(event)
-    #Connect to github
+    ref = os.environ["GITHUB_REF"]
+    pr_num = ref.split('/')[2]
+    owner = repository.split('/')[0]
+    repo_name = repository.split('/')[1]
+
     owner = 'tigertext'
-    query_url = f"https://api.github.com/repos/{repository}/issues"
+    query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}"
     params = {
-        "state": "open",
+        "owner": owner,
+        "repo": repo_name,
+        "pull_number": pr_num
     }
     headers = {'Authorization': f'token {token}'}
     r = requests.get(query_url, headers=headers, params=params)
