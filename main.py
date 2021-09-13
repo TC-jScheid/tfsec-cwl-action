@@ -122,8 +122,9 @@ def commentRules(rules, token, branch, repository, commit):
     #Iterate over rules and comment
     net_rules = []
     for rule in rules:
-        if rule not in current_comments:
-            print(f"[-] {rule} not in comments, adding...")
+        if rule['shortDescription']['text'] not in current_comments:
+            body = rule['shortDescription']['text']
+            print(f"[-] {body} not in comments, adding...")
             net_rules.append(rule)
 
     print('[-] Commenting broken rules')
@@ -139,7 +140,10 @@ def commentRules(rules, token, branch, repository, commit):
         print(params)
         headers = {'Authorization': f'token {token}'}
         r = requests.post(query_url, headers=headers, data=json.dumps(params))
-        print(r.status_code)
+        if r.status_code != 400:
+            print('[!] Error posting comment')
+            print(r.text)
+
     
 
 if __name__ == "__main__":
