@@ -107,21 +107,50 @@ def commentRules(rules, token, branch, repository, commit):
     owner = repository.split('/')[0]
     repo_name = repository.split('/')[1]
     query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}/reviews"
-    #Iterate over rules and comment
-    print('[-] Commenting broken rules')
-    for rule in rules:
-        body = rule['shortDescription']['text']
-        params = {
+    #TODO: Get current comments and compare. Drop rule from rules if match
+    params = {
             "owner": owner,
             "repo": repo_name,
             "pull_number": pr_num,
-            "event": 'COMMENT',
-            "body": body
-        }
-        print(params)
-        headers = {'Authorization': f'token {token}'}
-        r = requests.post(query_url, headers=headers, data=json.dumps(params))
-        print(r.status_code)
+    }
+    headers = {'Authorization': f'token {token}'}
+    comment_response = requests.get(query_url, headers=headers, data=json.dumps(params))
+    current_comments = []
+
+    for comment in json.loads(comment_response.text):
+        current_comments.append(comment['body'])
+    #Iterate over rules and comment
+    net_rules = []
+    for rule in rules:
+        if rule['shortDescription']['text'] not in current_comments:
+            body = rule['shortDescription']['text']
+            print(f"[-] {body} not in comments, adding...")
+            net_rules.append(rule)
+
+    if len(net_rules) > 0:
+        print('[-] Commenting broken rules')
+        for rule in net_rules:
+            body = rule['shortDescription']['text']
+            params = {
+                "owner": owner,
+                "repo": repo_name,
+                "pull_number": pr_num,
+                "event": 'COMMENT',
+                "body": body
+            }
+            print(params)
+            headers = {'Authorization': f'token {token}'}
+            r = requests.post(query_url, headers=headers, data=json.dumps(params))
+            if r.status_code != 200:
+                print(f"[!] Error posting comment: {r.status_code}")
+                print(r.text)
+            else:
+                print('[-] Comment successful')
+        exit(1)
+    else:
+        print('[**] No rules to comment, good work!')
+        exit(0)
+
     
 
 if __name__ == "__main__":
