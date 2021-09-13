@@ -116,12 +116,8 @@ def commentRules(rules, token, branch, repository, commit):
     headers = {'Authorization': f'token {token}'}
     comment_response = requests.get(query_url, headers=headers, data=json.dumps(params))
     current_comments = []
-    print(comment_response.status_code)
-    print(comment_response.json())
-    exit(1)
+
     for comment in json.loads(comment_response.text):
-        print(comment)
-        print(type(comment))
         current_comments.append(comment['body'])
     #Iterate over rules and comment
     net_rules = []
