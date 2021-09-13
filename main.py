@@ -127,22 +127,27 @@ def commentRules(rules, token, branch, repository, commit):
             print(f"[-] {body} not in comments, adding...")
             net_rules.append(rule)
 
-    print('[-] Commenting broken rules')
-    for rule in net_rules:
-        body = rule['shortDescription']['text']
-        params = {
-            "owner": owner,
-            "repo": repo_name,
-            "pull_number": pr_num,
-            "event": 'COMMENT',
-            "body": body
-        }
-        print(params)
-        headers = {'Authorization': f'token {token}'}
-        r = requests.post(query_url, headers=headers, data=json.dumps(params))
-        if r.status_code != 200:
-            print(f"[!] Error posting comment: {r.status_code}")
-            print(r.text)
+    if len(net_rules) > 0:
+        print('[-] Commenting broken rules')
+        for rule in net_rules:
+            body = rule['shortDescription']['text']
+            params = {
+                "owner": owner,
+                "repo": repo_name,
+                "pull_number": pr_num,
+                "event": 'COMMENT',
+                "body": body
+            }
+            print(params)
+            headers = {'Authorization': f'token {token}'}
+            r = requests.post(query_url, headers=headers, data=json.dumps(params))
+            if r.status_code != 200:
+                print(f"[!] Error posting comment: {r.status_code}")
+                print(r.text)
+            else:
+                print('[-] Comment successful')
+    else:
+        print('[**] No rules to comment, good work!')
 
     
 
