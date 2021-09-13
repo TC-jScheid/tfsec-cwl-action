@@ -114,7 +114,7 @@ def commentRules(rules, token, branch, repository, commit):
             "pull_number": pr_num,
     }
     headers = {'Authorization': f'token {token}'}
-    comment_response = requests.post(query_url, headers=headers, data=json.dumps(params))
+    comment_response = requests.get(query_url, headers=headers, data=json.dumps(params))
     current_comments = []
     print(comment_response.status_code)
     print(comment_response.json())
