@@ -107,9 +107,26 @@ def commentRules(rules, token, branch, repository, commit):
     owner = repository.split('/')[0]
     repo_name = repository.split('/')[1]
     query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}/reviews"
+    #TODO: Get current comments and compare. Drop rule from rules if match
+    params = {
+            "owner": owner,
+            "repo": repo_name,
+            "pull_number": pr_num,
+    }
+    headers = {'Authorization': f'token {token}'}
+    comment_response = requests.post(query_url, headers=headers, data=json.dumps(params))
+    current_comments = []
+    for comment in comment_response:
+        current_comments.append(comment['body'])
     #Iterate over rules and comment
-    print('[-] Commenting broken rules')
+    net_rules = []
     for rule in rules:
+        if rule not in current_comments:
+            print(f"[-] {rule} not in comments, adding...")
+            net_rules.append(rule)
+
+    print('[-] Commenting broken rules')
+    for rule in net_rules:
         body = rule['shortDescription']['text']
         params = {
             "owner": owner,
