@@ -148,8 +148,12 @@ def commentRules(rules, token, branch, repository, commit):
                 print('[-] Comment successful')
         exit(1)
     else:
-        print('[**] No rules to comment, good work!')
-        exit(0)
+        if rules:
+            print('[!] Check comments for broken rules')
+            exit(1)
+        else:
+            print('[**] No rules borken, good work!')
+            exit(0)
 
     
 
