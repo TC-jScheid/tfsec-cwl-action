@@ -147,7 +147,8 @@ def commentRules(rules, token, branch, repository, commit):
                 print(f"[!] Error posting comment: {r.status_code}")
                 print(r.text)
             else:
-                print('[-] Comment successful')
+                print(f"[-] Commented {body}")
+        print('[!] Fix terraform errors and rerun')
         exit(1)
     else:
         print('[**] No rules to comment, good work!')
