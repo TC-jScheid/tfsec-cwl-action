@@ -140,8 +140,8 @@ def commentRules(rules, token, branch, repository, commit):
         print(params)
         headers = {'Authorization': f'token {token}'}
         r = requests.post(query_url, headers=headers, data=json.dumps(params))
-        if r.status_code != 400:
-            print('[!] Error posting comment')
+        if r.status_code != 200:
+            print(f"[!] Error posting comment: {r.status_code}")
             print(r.text)
 
     
