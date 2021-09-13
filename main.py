@@ -17,6 +17,8 @@ def main():
     cwl_stream = os.environ["INPUT_CWL_STREAM"]
     #Get github token
     token = os.environ['INPUT_GITHUB_TOKEN']
+    if not token:
+        print('[!] Error github credentials not found')
     branch = os.environ["GITHUB_REF"]
     repository = os.environ["GITHUB_REPOSITORY"]
 
@@ -48,7 +50,6 @@ def main():
         # CAREFULLY DECONSTRUCTED from serif format
         rules = data['runs'][0]['tool']['driver']['rules']
 
-    #TODO: Check if PR and comment rules
     if head and base:
         output = commentRules(rules, token, branch, repository, commit)
     else:
@@ -107,7 +108,6 @@ def commentRules(rules, token, branch, repository, commit):
     owner = repository.split('/')[0]
     repo_name = repository.split('/')[1]
     query_url = f"https://api.github.com/repos/{repository}/pulls/{pr_num}/reviews"
-    #TODO: Get current comments and compare. Drop rule from rules if match
     params = {
             "owner": owner,
             "repo": repo_name,
@@ -115,8 +115,7 @@ def commentRules(rules, token, branch, repository, commit):
     }
     headers = {'Authorization': f'token {token}'}
     comment_response = requests.get(query_url, headers=headers, data=json.dumps(params))
-    print(comment_response.json())
-    exit(1)
+
     current_comments = []
 
     for comment in json.loads(comment_response.text):
