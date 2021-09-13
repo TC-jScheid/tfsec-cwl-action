@@ -118,6 +118,7 @@ def commentRules(rules, token, branch, repository, commit):
     current_comments = []
 
     for comment in json.loads(comment_response.text):
+        print(comment)
         current_comments.append(comment['body'])
     #Iterate over rules and comment
     net_rules = []
