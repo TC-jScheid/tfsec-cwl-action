@@ -132,8 +132,8 @@ def commentRules(rules, token, branch, repository, commit):
     if len(net_rules) > 0:
         print('[-] Commenting broken rules')
         for rule in net_rules:
-            msg = rule['shortDescription']['text']
-            body = f"TFSEC: {msg}"
+            body = rule['shortDescription']['text']
+            #body = f"TFSEC: {msg}"
             params = {
                 "owner": owner,
                 "repo": repo_name,
